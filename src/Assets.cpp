@@ -2,6 +2,10 @@
 
 namespace pixel
 {
+    Assets::Assets ()
+    {
+    }
+    
     Assets::~Assets ()
     {
       for (const auto &pair : this.textures)
@@ -11,18 +15,9 @@ namespace pixel
       this.textures.clear ();
     }
   
-    Assets *Assets::getInstance ()
-    {
-      if (this->instance == nullptr)
-      {
-        this->instance = new Assets ();
-      }
-      return this->instance;
-    }
-  
     void Assets::loadTexture (const std::string *path)
     {
-      if (!this.textures.contains (path))
+      if (this.textures.find (path) != this.textures.end ())
       {
         sf::Texture *t = new Texture ();
         t->loadFromFile (path);
