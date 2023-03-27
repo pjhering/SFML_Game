@@ -19,6 +19,8 @@ namespace pixel
         nlohmann::json doc = nlohmann::json::parse (data);
         nlohmann::json tx = doc["textures"];
         nlohmann::json sn = doc["sounds"];
+        nlohmann::json mu = doc["music"];
+        nlohmann::json ft = doc["fonts"];
 
         for (auto it = tx.begin (); it != tx.end (); ++it)
         {
@@ -36,6 +38,20 @@ namespace pixel
 
             this->sounds[it.key ()] = s;
         }
+        
+        for (auto it = mu.begin (); it != mu.end (); ++it)
+        {
+            sf::Music *m = new sf::Music ();
+            m->openFromFile (it.value ());
+            this->music[it.key ()] = m;
+        }
+        
+        for (auto it = ft.begin (); it != ft.end (); ++it)
+        {
+            sf::Fpnt *f = new sf::Font ();
+            f->loadFromFile (it.value ());
+            this->music[it.key ()] = f;
+        }
     }
 
 
@@ -45,12 +61,26 @@ namespace pixel
         {
             delete it.second;
         }
+        this->textures.clear ();
 
         for (auto &it : this->sounds)
         {
             delete it.second->getBuffer ();
             delete it.second;
         }
+        this->sounds.clear ();
+        
+        for (auto &it : this->music)
+        {
+            delete it.second ();
+        }
+        this->music.clear ();
+        
+        for (auto &it : this->fonts)
+        {
+            delete it.second ();
+        }
+        this->fonts.clear ();
     }
 
 
@@ -72,6 +102,32 @@ namespace pixel
         if (this->sounds.find (id) != this->sounds.end ())
         {
             return this->sounds[id];
+        }
+        else
+        {
+            return nullptr;
+        }
+    }
+
+
+    sf::Music *Assets::getMusic (std::string id)
+    {
+        if (this->music.find (id) != this->music.end ())
+        {
+            return this->music[id];
+        }
+        else
+        {
+            return nullptr;
+        }
+    }
+
+
+    sf::Font *Assets::getFont (std::string id)
+    {
+        if (this->fonts.find (id) != this->fonts.end ())
+        {
+            return this->fonts[id];
         }
         else
         {
